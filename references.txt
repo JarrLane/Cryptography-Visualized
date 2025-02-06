@@ -1,1 +1,7 @@
-Here is a list of references that helped me in my project
+Here is a list of references that helped me in my project:
+
+https://www.geeksforgeeks.org/python-convert-string-to-binary/
+
+https://www.geeksforgeeks.org/feistel-cipher/
+
+https://www.geeksforgeeks.org/python-gui-tkinter/
