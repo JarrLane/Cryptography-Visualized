@@ -11,14 +11,23 @@ class fiestelRunEncryption():
         self.right = ""
 
     def plaintext_preparer(self, plaintext):
-        if len(plaintext) != 4:
-            print("The plaintext must be 4 characters long")
-            return
-        else:
+        try:
+
+            if len(plaintext) == 0:
+                raise ValueError("The plaintext cannot be an empty string")
+
+            if len(plaintext) != 4:
+                raise ValueError("The plaintext must be 4 characters long")
+
+
             res = ''.join(format(ord(i), '08b') for i in plaintext)
             self.left = res[:16]
             self.right = res[16:32]
             print("Left:", self.left, "Right:", self.right)
+
+        except ValueError as e:
+            print(f"Error: {e}")
+            return e
 
 
     def rand_key(self):
@@ -48,12 +57,16 @@ def encrypt():
 
     def on_submit_plaintext():
         plaintext = inputPlaintext.get()
-        Run.plaintext_preparer(plaintext)  # Now passing the plaintext to the method
+        error = Run.plaintext_preparer(plaintext)
         Run.rand_key()
 
         inputPlaintext.delete(0, tkinter.END)
         sleep(0.5)
-        outputLabel.config(text=f"Left: {Run.left}\nRight: {Run.right}\nKey: {Run.key}", fg="light blue")
+        if error:
+            outputLabel.config(text=error, fg="red")
+            return
+        else:
+            outputLabel.config(text=f"Left: {Run.left}\nRight: {Run.right}\nKey: {Run.key}", fg="green")
 
     startScreen = tkinter.Tk()
     startScreen.resizable(True, True)
@@ -62,7 +75,7 @@ def encrypt():
     startScreen.config(bg="white")
 
     inputPlaintext = tkinter.Entry(startScreen, width=40)
-    inputPlaintext.pack(padx=5, pady=5)
+    inputPlaintext.pack(padx=5, pady=50)
 
     submitButton = tkinter.Button(startScreen, text="Submit", command=on_submit_plaintext)
     submitButton.pack(padx=5, pady=5)
