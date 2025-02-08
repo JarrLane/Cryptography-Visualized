@@ -47,8 +47,14 @@ class fiestelRunEncryption():
                 temp += "1"
         return temp
 
+    def RotateKey(self):
+        self.key = self.key[1:] + self.key[0]
     def feistelRound(self):
         self.roundNumber += 1
+        self.left = self.right
+        self.right = self.xor(self.left, self.key)
+        self.RotateKey()
+
 
 
 
@@ -72,7 +78,7 @@ def encrypt():
 
     def set_rounds():
         outputLabel2.config(text="Choose how many rounds you wish to run the cipher")
-        roundOptions = {'4 Rounds': 4, '8 Rounds': 8, '16 Rounds': 16}
+        roundOptions = {'4 Rounds': 4, '8 Rounds': 8}
         for text, value in roundOptions.items():
             radio_button = tkinter.Radiobutton(startScreen, text=text, variable=r, value=value, background="white")
             radio_button.pack(side=tkinter.TOP, ipady=5)
@@ -108,7 +114,7 @@ def encrypt():
     runningScreen.resizable(True, True)
     runningScreen.title("Encryption")
     runningScreen.geometry("600x600")
-    roundDisplay = tkinter.Label(runningScreen, text="Round " + str(Run.roundNumber), relief="ridge", bg="white")
+    roundDisplay = tkinter.Label(runningScreen, text="Round " + str(Run.roundNumber), relief="ridge",height=5, width=40 )
     nextRound = tkinter.Button(runningScreen, text="Next Round", command=Run.feistelRound)
     
     roundDisplay.pack()
