@@ -5,3 +5,5 @@ https://www.geeksforgeeks.org/python-convert-string-to-binary/
 https://www.geeksforgeeks.org/feistel-cipher/
 
 https://www.geeksforgeeks.org/python-gui-tkinter/
+
+https://www.geeksforgeeks.org/program-cyclically-rotate-array-one-python-list-slicing/
