@@ -7,3 +7,7 @@ https://www.geeksforgeeks.org/feistel-cipher/
 https://www.geeksforgeeks.org/python-gui-tkinter/
 
 https://www.geeksforgeeks.org/program-cyclically-rotate-array-one-python-list-slicing/
+
+https://www.tutorialspoint.com/python/tk_text.htm
+
+
