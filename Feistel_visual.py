@@ -125,16 +125,16 @@ def encrypt():
 
     submitButton = tkinter.Button(startScreen, text="Submit", command=on_submit_plaintext)
     submitButton.pack(padx=5, pady=5)
-    outputLabel = tkinter.Label(startScreen, text="", bg="white")
+    outputLabel = tkinter.Label(startScreen, text="", bg="grey21")
     outputLabel.pack(pady=10)
-    outputLabel2 = tkinter.Label(startScreen, text="", bg="white")
+    outputLabel2 = tkinter.Label(startScreen, text="", bg="grey21")
     outputLabel2.pack(pady=10)
     r = tkinter.IntVar()
 
     runningScreen = tkinter.Tk()
     runningScreen.resizable(True, True)
     runningScreen.title("Encryption")
-    runningScreen.geometry("1000x1000")
+    runningScreen.geometry("1500x1500")
     runningScreen.config(bg="grey21")
     def running():
 
@@ -147,8 +147,8 @@ def encrypt():
             rightInput.config(text=f"Right input:\n {Run.preRight}")
             leftResult.config(text=f"Left result:\n {Run.left}")
             rightResult.config(text=f"Right result:\n {Run.right}")
-            showFxor.config(text=f"Xor {Run.preRight} to {Run.key} and you get {Run.Fresult}")
-            showNextXor.config(text=f"Xor {Run.Fresult} to {Run.preLeft} and you get {Run.right}")
+            showFxor.config(text=f"Xor {Run.preRight} to {Run.key} \nand you get {Run.Fresult}")
+            showNextXor.config(text=f"Xor {Run.Fresult} to {Run.preLeft} \nand you get {Run.right}")
 
         elif Run.roundNumber > Run.roundsToRun:
             nextRound.config(state=tkinter.DISABLED)
@@ -186,8 +186,8 @@ def encrypt():
     leftResult.grid(row=4, column=0, padx=10, pady=5, sticky="w")
     rightResult.grid(row=4, column=1, padx=10, pady=5, sticky="e")
     nextRound.grid(row=6, column=0, columnspan=2, pady=10)
-    showFxor.grid(row=3, column=0,sticky = "w", pady=10)
-    showNextXor.grid(row=3, column=0, pady=10)
+    showFxor.grid(row=3,sticky = "e", pady=10)
+    showNextXor.grid(row=3, columnspan=2, pady=10)
     nextRound.config(state=tkinter.DISABLED)
     runningScreen.grid_columnconfigure(0, weight=1)
     runningScreen.grid_columnconfigure(1, weight=1)
