@@ -13,6 +13,7 @@ class fiestelRun():
         self.preLeft = ""
         self.preRight = ""
         self.preKey = ""
+        self.Fresult = ""
 
 
 
@@ -63,7 +64,8 @@ class fiestelRun():
         self.RotateKey()
         self.roundNumber += 1
         self.left = self.right
-        self.right = self.xor(self.left, self.key)
+        self.Fresult = self.xor(self.key, self.preRight)
+        self.right = self.xor(self.left, self.Fresult)
 
 
 
@@ -77,14 +79,15 @@ def encrypt():
         plaintext = inputPlaintext.get()
         error = Run.plaintext_preparer(plaintext)
         Run.rand_key()
-        inputPlaintext.config(state=tkinter.DISABLED)
-        submitButton.config(state=tkinter.DISABLED)
+
         inputPlaintext.delete(0, tkinter.END)
         sleep(0.5)
         if error:
             outputLabel.config(text=error, fg="red")
             return
         else:
+            inputPlaintext.config(state=tkinter.DISABLED)
+            submitButton.config(state=tkinter.DISABLED)
             outputLabel.config(text=f"Left: {Run.left}\nRight: {Run.right}\nKey: {Run.key}", fg="green")
             set_rounds()
 
@@ -144,6 +147,8 @@ def encrypt():
             rightInput.config(text=f"Right input:\n {Run.preRight}")
             leftResult.config(text=f"Left result:\n {Run.left}")
             rightResult.config(text=f"Right result:\n {Run.right}")
+            showFxor.config(text=f"Xor {Run.preRight} to {Run.key} and you get {Run.Fresult}")
+            showNextXor.config(text=f"Xor {Run.Fresult} to {Run.preLeft} and you get {Run.right}")
 
         elif Run.roundNumber > Run.roundsToRun:
             nextRound.config(state=tkinter.DISABLED)
@@ -169,6 +174,9 @@ def encrypt():
     leftResult = tkinter.Label(runningScreen, text="Left Result: TBD", bg="Light blue", height=5, width=20, fg="green", relief="ridge", font=("Comic Sans MS", 14))
     rightResult = tkinter.Label(runningScreen, text = "Right Result: TBD", bg="Light blue", height=5, width=20, fg="green", relief="ridge", font=("Comic Sans MS", 14))
     keyCycle = tkinter.Label(runningScreen ,text =f"Your starting key is {Run.key}" , bg="light blue", fg="green", relief="ridge", font=("Comic Sans MS", 14))
+    showFxor = tkinter.Label(runningScreen, text="Here in the F function we XOR\n the key and the right input", bg="light blue", fg="green", relief="ridge", font=("Comic Sans MS", 14))
+    showNextXor =tkinter.Label(runningScreen, text="Here is where the result of F()\n and the left input are Xored", bg="light blue", fg="green" , relief="ridge", font=("Comic Sans MS", 14))
+
 
     getStarted = tkinter.Button(runningScreen, text = "Lets start Round 1", command=fromStarting)
     roundDisplay.grid(row=0, column=0, columnspan=2, pady=10)
@@ -178,6 +186,8 @@ def encrypt():
     leftResult.grid(row=4, column=0, padx=10, pady=5, sticky="w")
     rightResult.grid(row=4, column=1, padx=10, pady=5, sticky="e")
     nextRound.grid(row=6, column=0, columnspan=2, pady=10)
+    showFxor.grid(row=3, column=0,sticky = "w", pady=10)
+    showNextXor.grid(row=3, column=0, pady=10)
     nextRound.config(state=tkinter.DISABLED)
     runningScreen.grid_columnconfigure(0, weight=1)
     runningScreen.grid_columnconfigure(1, weight=1)
