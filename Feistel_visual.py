@@ -65,7 +65,7 @@ class fiestelRun():
         self.roundNumber += 1
         self.left = self.right
         self.Fresult = self.xor(self.key, self.preRight)
-        self.right = self.xor(self.left, self.Fresult)
+        self.right = self.xor(self.preLeft, self.Fresult)
 
 
 
