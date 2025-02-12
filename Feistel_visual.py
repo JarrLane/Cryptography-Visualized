@@ -67,6 +67,10 @@ class fiestelRun():
         self.left = self.right
         self.Fresult = self.xor(self.key, self.preRight)
         self.right = self.xor(self.preLeft, self.Fresult)
+    def Decrypt(self):
+
+
+        self.roundNumber = self.roundNumber - 1
 
 
 
@@ -159,14 +163,53 @@ def encrypt():
             nextRound.config(state=tkinter.DISABLED)
             roundDisplay.config(text="Encryption Complete!")
             complete()
+    def decrypt_running():
+        pass
     def complete():
         startScreen.destroy()
         outputLabel3 = tkinter.Label(runningScreen, text="Do you want to close the \n program or decrypt the ciphertext you made?", bg="mint cream", fg="black", font=("Bookman old style", 14))
         outputLabel3.grid(row=8, columnspan=2)
         exitButton = tkinter.Button(runningScreen, text="Exit", command=runningScreen.destroy)
-        decryptButton =tkinter.Button(runningScreen, text="Decrypt", command=runningScreen.destroy)
+        decryptButton =tkinter.Button(runningScreen, text="Decrypt", command=decrypt)
         exitButton.grid(row=9, column = 0, sticky = "w", padx=25, pady=5)
         decryptButton.grid(row=9, column = 1, sticky = "e", padx=25, pady=5)
+
+    def decrypt():
+        decrypting = tkinter.Tk()
+        decrypting.title("Decrypt")
+        decrypting.config(bg="grey21")
+        decrypting.geometry("1920x1080")
+        decrypting.resizable(True, True)
+        roundDisplayD = tkinter.Label(decrypting, text="Round 0", relief="ridge", height=5, width=20,
+                                      font=("Harrington", 20), bg="mint cream", fg="dark blue")
+        nextRoundD = tkinter.Button(decrypting, text="Next Round", command=running, padx=5, pady=5)
+        leftInputD = tkinter.Label(runningScreen, text=f"Left Input:\n {Run.left}", bg="mint cream", height=5, width=20,
+                                   fg="green", relief="ridge", font=("Comic Sans MS", 14))
+        rightInputD = tkinter.Label(decrypting, text=f"Right Input:\n {Run.right}", bg="mint cream", height=5,
+                                    width=20, fg="green", relief="ridge", font=("Comic Sans MS", 14))
+        leftResultD = tkinter.Label(decrypting, text="Left Result: TBD", bg="mint cream", height=5, width=20,
+                                    fg="green", relief="ridge", font=("Comic Sans MS", 14))
+        rightResultD = tkinter.Label(decrypting, text="Right Result: TBD", bg="mint cream", height=5, width=20,
+                                     fg="green", relief="ridge", font=("Comic Sans MS", 14))
+        keyCycleD = tkinter.Label(decrypting, text=f"Your starting key is {Run.key}", bg="mint cream", fg="green",
+                                  relief="ridge", font=("Comic Sans MS", 14))
+        showFxorD = tkinter.Label(decrypting, text="Here in the F function we XOR\n the key and the right input",
+                                  bg="mint cream", fg="green", relief="ridge", font=("Comic Sans MS", 14))
+        showNextXorD = tkinter.Label(decrypting,
+                                    text="Here is where the result of F()\n and the left input are Xored",
+                                    bg="mint cream", fg="green", relief="ridge", font=("Comic Sans MS", 14))
+        roundDisplayD.grid(row=0, column=0, columnspan=2, pady=10)
+        leftInputD.grid(row=2, column=0, padx=10, pady=5, sticky="w")
+        rightInputD.grid(row=2, column=1, padx=10, pady=5, sticky="e")
+        keyCycleD.grid(row=1, column=0, columnspan=2, pady=10)
+        nextRoundD.grid(row=6, column=0, padx=10, pady=5, sticky="w")
+        showFxorD.grid(row=4, column=1, sticky="e", pady=10)
+        showNextXorD.grid(row=4, columnspan=2, pady=10)
+        nextRound.config(state=tkinter.DISABLED)
+        leftResultD.grid(row=5, column=0, padx=10, pady=5, sticky="w")
+        rightResultD.grid(row=5, column=1, padx=10, pady=5, sticky="e")
+        runningScreen.destroy()
+        decrypting.mainloop()
 
     def initDisplay():
         leftInput.config(text=f"Left Input:\n {Run.left}")
@@ -224,6 +267,8 @@ def encrypt():
 
     runningScreen.withdraw()
     startScreen.mainloop()
+
+
 
 
 encrypt()
