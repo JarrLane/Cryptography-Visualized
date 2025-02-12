@@ -1,6 +1,7 @@
 import tkinter
 import random
 from time import sleep
+from tkinter.constants import RIGHT
 
 
 class fiestelRun():
@@ -88,17 +89,18 @@ def encrypt():
         else:
             inputPlaintext.config(state=tkinter.DISABLED)
             submitButton.config(state=tkinter.DISABLED)
-            outputLabel.config(text=f"Left: {Run.left}\nRight: {Run.right}\nKey: {Run.key}", fg="green")
+            outputLabel.config(text=f"Left: {Run.left}\nRight: {Run.right}\nKey: {Run.key}", fg="green", font=("Bookman old style", 12))
             set_rounds()
 
     def set_rounds():
-        outputLabel2.config(text="Choose how many rounds you wish to run the cipher")
+        outputLabel2.config(text="Choose how many rounds you wish to run the cipher", fg="mint cream", font=("Bookman old style", 12))
         roundOptions = {'4 Rounds': 4, '8 Rounds': 8}
         for text, value in roundOptions.items():
-            radio_button = tkinter.Radiobutton(startScreen, text=text, variable=r, value=value, background="white")
+            radio_button = tkinter.Radiobutton(startScreen, text=text, variable=r, value=value, background="grey21", foreground="mint cream", font=("Bookman old style", 12))
             radio_button.pack(ipady=25)
 
-        beginButton = tkinter.Button(startScreen, text="Begin Encryption", command=setupComplete)
+        beginButton = tkinter.Button(startScreen, text="Begin Encryption", command=setupComplete, background="mint cream")
+        beginButton.pack(ipady=25)
         beginButton.pack(side=tkinter.TOP, ipady=5)
 
     def setupComplete():
@@ -135,7 +137,7 @@ def encrypt():
     runningScreen = tkinter.Tk()
     runningScreen.resizable(True, True)
     runningScreen.title("Encryption")
-    runningScreen.geometry("1500x1500")
+    runningScreen.geometry("1920x1080")
     runningScreen.config(bg="grey21")
     def running():
 
@@ -157,7 +159,7 @@ def encrypt():
             complete()
     def complete():
         startScreen.destroy()
-        outputLabel3 = tkinter.Label(runningScreen, text="Do you want to close the \n program or decrypt the ciphertext you made?", bg="lightblue2", fg="black", font=("Bookman old style", 14))
+        outputLabel3 = tkinter.Label(runningScreen, text="Do you want to close the \n program or decrypt the ciphertext you made?", bg="mint cream", fg="black", font=("Bookman old style", 14))
         outputLabel3.grid(row=8, columnspan=2)
         exitButton = tkinter.Button(runningScreen, text="Exit", command=runningScreen.destroy)
         decryptButton =tkinter.Button(runningScreen, text="Decrypt", command=runningScreen.destroy)
@@ -168,15 +170,30 @@ def encrypt():
         leftInput.config(text=f"Left Input:\n {Run.left}")
         rightInput.config(text=f"Right Input:\n {Run.right}")
         keyCycle.config(text=f"Your starting key is {Run.key}")
-    roundDisplay = tkinter.Label(runningScreen, text="Round 0", relief="ridge", height=5, width=20, font=("Harrington", 20), bg="light blue", fg="dark blue")
+
+
+
+
+
+
+    roundDisplay = tkinter.Label(runningScreen, text="Round 0", relief="ridge", height=5, width=20, font=("Harrington", 20), bg="mint cream", fg="dark blue")
     nextRound = tkinter.Button(runningScreen, text="Next Round", command=running, padx=5, pady=5)
-    leftInput = tkinter.Label(runningScreen, text=f"Left Input:\n {Run.left}", bg="Light blue", height=5, width=20, fg="green", relief="ridge", font=("Comic Sans MS", 14))
-    rightInput = tkinter.Label(runningScreen, text=f"Right Input:\n {Run.right}", bg="Light blue", height=5, width=20, fg="green", relief="ridge", font=("Comic Sans MS", 14))
-    leftResult = tkinter.Label(runningScreen, text="Left Result: TBD", bg="Light blue", height=5, width=20, fg="green", relief="ridge", font=("Comic Sans MS", 14))
-    rightResult = tkinter.Label(runningScreen, text = "Right Result: TBD", bg="Light blue", height=5, width=20, fg="green", relief="ridge", font=("Comic Sans MS", 14))
-    keyCycle = tkinter.Label(runningScreen ,text =f"Your starting key is {Run.key}" , bg="light blue", fg="green", relief="ridge", font=("Comic Sans MS", 14))
-    showFxor = tkinter.Label(runningScreen, text="Here in the F function we XOR\n the key and the right input", bg="light blue", fg="green", relief="ridge", font=("Comic Sans MS", 14))
-    showNextXor =tkinter.Label(runningScreen, text="Here is where the result of F()\n and the left input are Xored", bg="light blue", fg="green" , relief="ridge", font=("Comic Sans MS", 14))
+    leftInput = tkinter.Label(runningScreen, text=f"Left Input:\n {Run.left}", bg="mint cream", height=5, width=20, fg="green", relief="ridge", font=("Comic Sans MS", 14))
+    rightInput = tkinter.Label(runningScreen, text=f"Right Input:\n {Run.right}", bg="mint cream", height=5, width=20, fg="green", relief="ridge", font=("Comic Sans MS", 14))
+    leftResult = tkinter.Label(runningScreen, text="Left Result: TBD", bg="mint cream", height=5, width=20, fg="green", relief="ridge", font=("Comic Sans MS", 14))
+    rightResult = tkinter.Label(runningScreen, text = "Right Result: TBD", bg="mint cream", height=5, width=20, fg="green", relief="ridge", font=("Comic Sans MS", 14))
+    keyCycle = tkinter.Label(runningScreen ,text =f"Your starting key is {Run.key}" , bg="mint cream", fg="green", relief="ridge", font=("Comic Sans MS", 14))
+    showFxor = tkinter.Label(runningScreen, text="Here in the F function we XOR\n the key and the right input", bg="mint cream", fg="green", relief="ridge", font=("Comic Sans MS", 14))
+
+
+
+
+    showNextXor =tkinter.Label(runningScreen, text="Here is where the result of F()\n and the left input are Xored", bg="mint cream", fg="green" , relief="ridge", font=("Comic Sans MS", 14))
+    FCanvas = tkinter.Canvas(runningScreen, bg="grey21", height=50, width=50, bd=0, highlightthickness=0)
+    arrowF = FCanvas.create_line(25,0,25,50, arrow=tkinter.LAST, fill="red2", width=7)
+    keyCanvas = tkinter.Canvas(runningScreen, bg="grey21", height=210, width=450, bd=0 , highlightthickness=0)
+    keyArrow = keyCanvas.create_line(10,10,400,200, arrow=tkinter.LAST, fill= "red2", width=7)
+
 
 
     getStarted = tkinter.Button(runningScreen, text = "Lets start Round 1", command=fromStarting)
@@ -184,15 +201,21 @@ def encrypt():
     leftInput.grid(row=2, column=0, padx=10, pady=5, sticky="w")
     rightInput.grid(row=2, column=1, padx=10, pady=5, sticky="e")
     keyCycle.grid(row=1, column = 0, columnspan = 2, padx=10, pady=20)
-    leftResult.grid(row=4, column=0, padx=10, pady=5, sticky="w")
-    rightResult.grid(row=4, column=1, padx=10, pady=5, sticky="e")
-    nextRound.grid(row=6, column=0, columnspan=2, pady=10)
-    showFxor.grid(row=3,column=1,sticky = "e", pady=10)
-    showNextXor.grid(row=3, columnspan=2, pady=10)
+    leftResult.grid(row=6, column=0, padx=10, pady=5, sticky="w")
+    rightResult.grid(row=6, column=1, padx=10, pady=5, sticky="e")
+    nextRound.grid(row=7, column=0, columnspan=2, pady=10)
+    showFxor.grid(row=4,column=1,sticky = "e", pady=10)
+    showNextXor.grid(row=4, columnspan=2, pady=10)
     nextRound.config(state=tkinter.DISABLED)
     runningScreen.grid_columnconfigure(0, weight=1)
     runningScreen.grid_columnconfigure(1, weight=1)
-    getStarted.grid(row=7, column=0, columnspan=2, pady=10)
+    getStarted.grid(row=9, column=0, columnspan=2, pady=10)
+    FCanvas.grid(row=3, column=1,padx = 60, pady=10, sticky="e")
+    keyCanvas.grid(row=2, column = 1, pady=10, padx=100)
+
+
+
+
     runningScreen.withdraw()
     startScreen.mainloop()
 
