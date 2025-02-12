@@ -119,10 +119,12 @@ def encrypt():
     startScreen = tkinter.Tk()
     startScreen.resizable(True, True)
     startScreen.title("Setup Encryption")
-    startScreen.geometry("600x600")
+    startScreen.geometry("600x800")
     startScreen.config(bg="grey21")
     titleLabel = tkinter.Label(startScreen, text="Fiestel Encryption", bg="grey21", font=("Bookman old style", 30), fg="bisque", relief="sunken")
     titleLabel.pack(pady=15)
+    fourChars = tkinter.Label(startScreen, text="Please input a 4 character word", bg="grey21", fg="mint cream", font=("Bookman old style", 15), relief="sunken")
+    fourChars.pack(pady=15)
     inputPlaintext = tkinter.Entry(startScreen, width=40, relief="sunken", bg="grey62", fg="bisque")
     inputPlaintext.pack(padx=5, pady=50)
 
@@ -193,7 +195,10 @@ def encrypt():
     arrowF = FCanvas.create_line(25,0,25,50, arrow=tkinter.LAST, fill="red2", width=7)
     keyCanvas = tkinter.Canvas(runningScreen, bg="grey21", height=210, width=450, bd=0 , highlightthickness=0)
     keyArrow = keyCanvas.create_line(10,10,400,200, arrow=tkinter.LAST, fill= "red2", width=7)
-
+    nextXarr = tkinter.Canvas(runningScreen, bg="grey21", height=50, width=250, bd=0, highlightthickness=0)
+    nextXarrow = nextXarr.create_line(10,25,245,25, fill="red2", width=7, arrow=tkinter.FIRST)
+    finalArr = tkinter.Canvas(runningScreen, bg="grey21", height=50, width=300, bd=0, highlightthickness=0)
+    finalArrow = finalArr.create_line(300,10,10,45, fill="red2", width=7, arrow=tkinter.LAST)
 
 
     getStarted = tkinter.Button(runningScreen, text = "Lets start Round 1", command=fromStarting)
@@ -212,7 +217,8 @@ def encrypt():
     getStarted.grid(row=9, column=0, columnspan=2, pady=10)
     FCanvas.grid(row=3, column=1,padx = 60, pady=10, sticky="e")
     keyCanvas.grid(row=2, column = 1, pady=10, padx=100)
-
+    nextXarr.grid(row=4, column=1, padx=12, pady=5)
+    finalArr.grid(row=4, column=0, padx=15, pady=5)
 
 
 
