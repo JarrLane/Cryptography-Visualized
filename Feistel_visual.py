@@ -1,7 +1,12 @@
+from PySide6 import QtCore
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QApplication, QWidget, QLabel, QVBoxLayout,
-    QComboBox, QLineEdit, QPushButton, QMessageBox
+    QComboBox, QLineEdit, QPushButton, QMessageBox,
 )
+
+
 import random
 from time import sleep
 import sys
@@ -119,7 +124,7 @@ class BeginGUI(QWidget):
     def toEnc(self):
         print("Begin")
         self.close()
-        self.encryptionWindow = encryptGUI(self.run)  # store it as an instance variable
+        self.encryptionWindow = encryptGUI(self.run) 
         self.encryptionWindow.show()
 
 class encryptGUI(QWidget):
@@ -129,6 +134,9 @@ class encryptGUI(QWidget):
         self.setGeometry(100, 100, 1920, 1080)
         self.layout = QVBoxLayout()
         self.feistel = feistel_instance
+
+
+
         self.round_count = QLabel(f"Current Round: {feistel_instance.roundNumber}")
         self.TopLeftScreen = QLabel(f"Current Left: {feistel_instance.preLeft}")
         self.TopRightScreen = QLabel(f"Current Right: {feistel_instance.preRight}")
@@ -144,7 +152,17 @@ class encryptGUI(QWidget):
         self.layout.addWidget(self.BottomRightScreen)
 
         self.layout.addWidget(self.NextRoundButton)
+
         self.setLayout(self.layout)
+
+        def update_round(self):
+            self.feistel.feistelRoundEncrypt()
+            self.round_count.setText(f"Current Round: {self.feistel.roundNumber}")
+            self.TopLeftScreen.setText(f"Current Left: {self.feistel.preLeft}")
+            self.TopRightScreen.setText(f"Current Right: {self.feistel.preRight}")
+            self.BottomLeftScreen.setText(f"Current Bottom: {self.feistel.left}")
+            self.BottomRightScreen.setText(f"Current Bottom: {self.feistel.right}")
+
 
 
 
