@@ -98,7 +98,8 @@ class BeginGUI(QWidget):
 
 
         self.begin_button = QPushButton("Begin")
-        self.begin_button.clicked.connect(lambda: toEnc(self, self.run))
+        self.begin_button.clicked.connect(lambda: self.toEnc())
+
         self.layout.addWidget(self.round_label)
         self.layout.addWidget(self.round_dropdown)
         self.layout.addWidget(self.input_label)
@@ -115,6 +116,12 @@ class BeginGUI(QWidget):
         LRlabel = QLabel(str(result))
         self.layout.addWidget(LRlabel)
 
+    def toEnc(self):
+        print("Begin")
+        self.close()
+        self.encryptionWindow = encryptGUI(self.run)  # store it as an instance variable
+        self.encryptionWindow.show()
+
 class encryptGUI(QWidget):
     def __init__(self, feistel_instance):
         super().__init__()
@@ -122,14 +129,24 @@ class encryptGUI(QWidget):
         self.setGeometry(100, 100, 1920, 1080)
         self.layout = QVBoxLayout()
         self.feistel = feistel_instance
-        self.round_count = QLabel("Current Round: ", feistel_instance.roundNumber)
+        self.round_count = QLabel(f"Current Round: {feistel_instance.roundNumber}")
+        self.TopLeftScreen = QLabel(f"Current Left: {feistel_instance.preLeft}")
+        self.TopRightScreen = QLabel(f"Current Right: {feistel_instance.preRight}")
+        self.BottomLeftScreen = QLabel(f"Current Bottom: {feistel_instance.left}")
+        self.BottomRightScreen = QLabel(f"Current Bottom: {feistel_instance.right}")
+        self.NextRoundButton = QPushButton("Next Round")
+        self.NextRoundButton.clicked.connect(feistel_instance.feistelRoundEncrypt)
+
+        self.layout.addWidget(self.round_count)
+        self.layout.addWidget(self.TopLeftScreen)
+        self.layout.addWidget(self.TopRightScreen)
+        self.layout.addWidget(self.BottomLeftScreen)
+        self.layout.addWidget(self.BottomRightScreen)
+
+        self.layout.addWidget(self.NextRoundButton)
+        self.setLayout(self.layout)
 
 
-def toEnc(window, feistel_instance):
-    print("Begin")
-    window.close()
-    encryptionWindow = encryptGUI(feistel_instance)
-    encryptionWindow.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
