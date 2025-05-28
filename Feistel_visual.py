@@ -1,9 +1,9 @@
 from PySide6 import QtCore
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize, QRect
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QApplication, QWidget, QLabel, QVBoxLayout,
-    QComboBox, QLineEdit, QPushButton, QMessageBox,
+    QComboBox, QLineEdit, QPushButton, QMessageBox, QHBoxLayout, QStackedLayout,
 )
 
 
@@ -36,6 +36,8 @@ class fiestelRun():
             res = ''.join(format(ord(i), '08b') for i in plaintext)
             self.left = res[:16]
             self.right = res[16:32]
+            self.preLeft = res[:16]
+            self.preRight = res[16:32]
             print("Left:", self.left, "Right:", self.right)
             return "Left:", self.left, "Right:", self.right
 
@@ -66,20 +68,22 @@ class fiestelRun():
         self.preLeft = self.left
         self.preRight = self.right
         self.preKey = self.key
-        self.RotateKey()
-        self.roundNumber += 1
-        self.left = self.right
-        self.Fresult = self.xor(self.key, self.preRight)
-        self.right = self.xor(self.preLeft, self.Fresult)
-    def feistelRoundDecrypt(self):
-        self.preLeft = self.left
-        self.preRight = self.right
-        self.preKey = self.key
-        self.decryptRotateKey()
+        #self.RotateKey()
         self.roundNumber += 1
         self.left = self.preRight
-        self.reverseFresult = self.xor(self.key, self.preRight)
-        self.right = self.xor(self.preLeft, self.reverseFresult)
+        self.Fresult = self.xor(self.key, self.preRight)
+        self.right = self.xor(self.preLeft, self.Fresult)
+        self.RotateKey()
+    def feistelRoundDecrypt(self):
+        self.decryptRotateKey()
+        self.preLeft = self.right
+        self.preRight = self.left
+        self.preKey = self.key
+        self.roundNumber -= 1
+        self.left = self.preLeft
+        self.F_result = self.xor(self.key, self.preLeft)
+        self.right = self.xor(self.preRight, self.F_result)
+
 
 class BeginGUI(QWidget):
     def __init__(self):
@@ -103,6 +107,8 @@ class BeginGUI(QWidget):
 
 
         self.begin_button = QPushButton("Begin")
+        self.begin_button.setMinimumSize(QSize(120, 40))
+        self.begin_button.setEnabled(False)
         self.begin_button.clicked.connect(lambda: self.toEnc())
 
         self.layout.addWidget(self.round_label)
@@ -118,13 +124,20 @@ class BeginGUI(QWidget):
         self.setLayout(self.layout)
     def splitButtonClicked(self):
         result = self.run.plaintext_preparer(self.word.text())
-        LRlabel = QLabel(str(result))
+        self.run.rand_key()
+        LRlabel = QLabel(str(result)+"\nKey: "+ self.run.key)
         self.layout.addWidget(LRlabel)
+        self.validate_input()
+
+    def validate_input(self):
+        self.begin_button.setEnabled(len(self.word.text()) == 4)
 
     def toEnc(self):
         print("Begin")
+        self.run.roundsToRun = int(self.round_dropdown.currentText())
         self.close()
-        self.encryptionWindow = encryptGUI(self.run) 
+        #self.run.decryptRotateKey()
+        self.encryptionWindow = encryptGUI(self.run)
         self.encryptionWindow.show()
 
 class encryptGUI(QWidget):
@@ -134,34 +147,138 @@ class encryptGUI(QWidget):
         self.setGeometry(100, 100, 1920, 1080)
         self.layout = QVBoxLayout()
         self.feistel = feistel_instance
+        self.keepGoingTF = "null"
+        self.EncryptOrDecrypt = "E"
 
 
+        container = QWidget()
+        self.stacked_layout = QStackedLayout(container)
 
-        self.round_count = QLabel(f"Current Round: {feistel_instance.roundNumber}")
-        self.TopLeftScreen = QLabel(f"Current Left: {feistel_instance.preLeft}")
-        self.TopRightScreen = QLabel(f"Current Right: {feistel_instance.preRight}")
-        self.BottomLeftScreen = QLabel(f"Current Bottom: {feistel_instance.left}")
-        self.BottomRightScreen = QLabel(f"Current Bottom: {feistel_instance.right}")
+        self.bg_label = QLabel()
+        self.bg_pixmap = QPixmap("feistel_bg2.png")
+        self.bg_label.setPixmap(self.bg_pixmap)
+        self.bg_label.setScaledContents(True)
+
+        self.content_widget = QWidget()
+        self.content_layout = QVBoxLayout(self.content_widget)
+        self.content_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.round_count = QLabel(f"Current Round: {self.feistel.roundNumber}")
+        self.round_count.setStyleSheet("color: white; background-color: rgba(0, 0, 0, 120); font-size: 20px;")
+        self.round_count.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+
+        self.TopLeftScreen = QLabel(f"Current Left:\n {self.feistel.preLeft}")
+        self.TopRightScreen = QLabel(f"Current Right:\n {self.feistel.preRight}")
+        self.BottomLeftScreen = QLabel(f"Current Bottom:\n N/A")
+        self.BottomRightScreen = QLabel(f"Current Bottom:\n N/A")
+        for lbl in [self.TopLeftScreen, self.TopRightScreen, self.BottomLeftScreen, self.BottomRightScreen]:
+            lbl.setStyleSheet(
+                "color: black; font-size: 20px; padding: 4px;"
+            )
+
+        top_layout = QHBoxLayout()
+        top_layout.addWidget(self.TopLeftScreen)
+        top_layout.addWidget(self.TopRightScreen)
+
+        bottom_layout = QHBoxLayout()
+        bottom_layout.addWidget(self.BottomLeftScreen)
+        bottom_layout.addWidget(self.BottomRightScreen)
+
+        self.ExitButton = QPushButton("Exit")
+        self.ExitButton.setMinimumSize(QSize(120, 40))
+        self.ExitButton.setEnabled(False)
+        self.ExitButton.clicked.connect(lambda: self.keepGoing(False))
+
         self.NextRoundButton = QPushButton("Next Round")
-        self.NextRoundButton.clicked.connect(feistel_instance.feistelRoundEncrypt)
+        self.NextRoundButton.setMinimumSize(QSize(160, 50))
+        self.NextRoundButton.clicked.connect(self.next_round_clicked)
 
-        self.layout.addWidget(self.round_count)
-        self.layout.addWidget(self.TopLeftScreen)
-        self.layout.addWidget(self.TopRightScreen)
-        self.layout.addWidget(self.BottomLeftScreen)
-        self.layout.addWidget(self.BottomRightScreen)
+        self.DecryptButton = QPushButton("Decrypt")
+        self.DecryptButton.setMinimumSize(QSize(160, 50))
+        self.DecryptButton.setEnabled(False)
+        self.DecryptButton.clicked.connect(lambda: self.keepGoing(True))
 
-        self.layout.addWidget(self.NextRoundButton)
+        button_row = QHBoxLayout()
+        button_row.addWidget(self.DecryptButton)
+        button_row.addWidget(self.NextRoundButton)
+        button_row.addWidget(self.ExitButton)
+        for button in [self.DecryptButton, self.NextRoundButton, self.ExitButton]:
+            button.setStyleSheet("color: white; font-size: 16px;")
 
-        self.setLayout(self.layout)
 
-        def update_round(self):
-            self.feistel.feistelRoundEncrypt()
-            self.round_count.setText(f"Current Round: {self.feistel.roundNumber}")
-            self.TopLeftScreen.setText(f"Current Left: {self.feistel.preLeft}")
-            self.TopRightScreen.setText(f"Current Right: {self.feistel.preRight}")
-            self.BottomLeftScreen.setText(f"Current Bottom: {self.feistel.left}")
-            self.BottomRightScreen.setText(f"Current Bottom: {self.feistel.right}")
+        self.content_layout.addWidget(self.round_count)
+        self.content_layout.addLayout(top_layout)
+        self.content_layout.addLayout(bottom_layout)
+        self.content_layout.addLayout(button_row)
+        self.content_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.content_layout.setContentsMargins(50, 50, 50, 50)
+        self.content_layout.setSpacing(70)
+
+
+        self.stacked_layout.addWidget(self.bg_label)
+        self.stacked_layout.addWidget(self.content_widget)
+        self.stacked_layout.setStackingMode(QStackedLayout.StackingMode.StackAll)
+
+
+        self.setLayout(self.stacked_layout)
+
+
+    def resizeEvent(self, event):
+        self.bg_label.setPixmap(
+            self.bg_pixmap.scaled(self.size(), Qt.AspectRatioMode.KeepAspectRatio))
+        self.bg_label.resize(self.size())
+        return super().resizeEvent(event)
+    def next_round_clicked(self):
+        if self.EncryptOrDecrypt == "E":
+            if self.feistel.roundNumber < self.feistel.roundsToRun:
+                self.feistel.feistelRoundEncrypt()
+                print(self.feistel.key)
+                self.round_count.setText(f"Current Round: {self.feistel.roundNumber} \nCurrent Key: {self.feistel.key}")
+                self.TopLeftScreen.setText(f"Current Left:\n {self.feistel.preLeft}")
+                self.TopRightScreen.setText(f"Current Right:\n {self.feistel.preRight}")
+                self.BottomLeftScreen.setText(f"New Left:\n {self.feistel.left}")
+                self.BottomRightScreen.setText(f"New Right:\n {self.feistel.right}")
+            else:
+                self.ExitButton.setEnabled(True)
+                self.DecryptButton.setEnabled(True)
+                self.NextRoundButton.setEnabled(False)
+        elif self.EncryptOrDecrypt == "D":
+            self.feistel.feistelRoundDecrypt()
+            print(self.feistel.key)
+            self.round_count.setText(
+                f"Current Round (Reverse): {self.feistel.roundNumber}\n Current Key: {self.feistel.key}")
+            self.TopLeftScreen.setText(f"Current Left:\n {self.feistel.preLeft}")
+            self.TopRightScreen.setText(f"Current Right:\n {self.feistel.preRight}")
+            self.BottomLeftScreen.setText(f"New Left:\n {self.feistel.left}")
+            self.BottomRightScreen.setText(f"New Right:\n {self.feistel.right}")
+            self.ExitButton.setEnabled(False)
+            if self.feistel.roundNumber == 0:
+                self.round_count.setText("Finished!")
+                print("Left: " + self.feistel.left)
+                print("Right: " + self.feistel.right)
+                self.ExitButton.setEnabled(True)
+                self.DecryptButton.setEnabled(False)
+                self.NextRoundButton.setEnabled(False)
+
+    def keepGoing(self, TF):
+        self.keepGoingTF = TF
+        if self.keepGoingTF:
+            self.EncryptOrDecrypt = "D"
+            self.feistel.RotateKey()
+            self.NextRoundButton.setEnabled(True)
+            self.DecryptButton.setEnabled(False)
+            self.ExitButton.setEnabled(False)
+
+        else:
+            self.close()
+
+
+
+
+
+
 
 
 
