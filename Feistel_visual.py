@@ -271,7 +271,7 @@ class encryptGUI(QWidget):
                 self.DecryptButton.setEnabled(False)
                 self.NextRoundButton.setEnabled(True)
             if self.feistel.roundNumber == 0:
-                final_binary = self.feistel.left + self.feistel.right
+                final_binary = self.feistel.right+self.feistel.left 
                 try:
                     decrypted_text = self.feistel.binary32_to_text(final_binary)
                 except ValueError as e:
